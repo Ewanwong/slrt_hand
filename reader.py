@@ -7,6 +7,7 @@ import random
 import pickle
 from utils.img2vec import video2vector
 from utils.augmentation import *
+from torchvision import transforms
 
 
 class Reader:
@@ -99,13 +100,19 @@ class Reader:
         if self.mode == 'train':
             print("Apply training transform.")
             return Compose([
+                Resize(256),
+                CenterCrop(224),
                 ImageAugmentation(trans=0.1, color_dev=0.1, distortion=True),
                 ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                 TemporalRescale(temp_scaling=0.2)
             ])
         else:
             print("Apply test transform")
             return Compose([
-                ToTensor()
+                Resize(256),
+                CenterCrop(224),
+                ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
 

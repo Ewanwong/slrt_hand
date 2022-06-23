@@ -98,3 +98,69 @@ class ImageAugmentation:
         # video += deviation[None, None, None, :]
 
         return video
+
+
+class CenterCrop(object):
+    def __init__(self, size):
+        if isinstance(size, numbers.Number):
+            self.size = (int(size), int(size))
+        else:
+            self.size = size
+
+    def __call__(self, clip):
+        try:
+            im_h, im_w, im_c = clip[0].shape
+        except ValueError:
+            print(clip[0].shape)
+        new_h, new_w = self.size
+        new_h = im_h if new_h >= im_h else new_h
+        new_w = im_w if new_w >= im_w else new_w
+        top = int(round((im_h - new_h) / 2.))
+        left = int(round((im_w - new_w) / 2.))
+        return [img[top:top + new_h, left:left + new_w] for img in clip]
+
+
+class Resize(object):
+    """
+    Resize video bysoomingin and out.
+    Args:
+        rate (float): Video is scaled uniformly between
+        [1 - rate, 1 + rate].
+        interp (string): Interpolation to use for re-sizing
+        ('nearest', 'lanczos', 'bilinear', 'bicubic' or 'cubic').
+    """
+
+    def __init__(self, rate=0.0, interp='bilinear'):
+        self.rate = rate
+        self.interpolation = interp
+
+    def __call__(self, clip):
+        scaling_factor = self.rate
+
+        if isinstance(clip[0], np.ndarray):
+            im_h, im_w, im_c = clip[0].shape
+        elif isinstance(clip[0], PIL.Image.Image):
+            im_w, im_h = clip[0].size
+
+        new_w = int(im_w * scaling_factor)
+        new_h = int(im_h * scaling_factor)
+        new_size = (new_w, new_h)
+        if isinstance(clip[0], np.ndarray):
+            return [np.array(PIL.Image.fromarray(img).resize(new_size)) for img in clip]
+        elif isinstance(clip[0], PIL.Image.Image):
+            return [img.resize(size=(new_w, new_h), resample=self._get_PIL_interp(self.interpolation)) for img in clip]
+        else:
+            raise TypeError('Expected numpy.ndarray or PIL.Image' +
+                            'but got list of {0}'.format(type(clip[0])))
+
+    def _get_PIL_interp(self, interp):
+        if interp == 'nearest':
+            return PIL.Image.NEAREST
+        elif interp == 'lanczos':
+            return PIL.Image.LANCZOS
+        elif interp == 'bilinear':
+            return PIL.Image.BILINEAR
+        elif interp == 'bicubic':
+            return PIL.Image.BICUBIC
+        elif interp == 'cubic':
+            return PIL.Image.CUBIC
