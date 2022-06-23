@@ -12,7 +12,7 @@ def img2vector(img_path):
     # shape: width * height * channel
     # 没有减去平均数，只归一到[-1, 1]
     # TODO: 可以减去平均数
-    return np.array(cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB).astype(np.float32) / 127.5 - 1)
+    return np.array(cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB).astype(np.float32) / 255)
 
 
 def video2vector(folder_path):

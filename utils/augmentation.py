@@ -146,7 +146,8 @@ class Resize(object):
         new_h = int(im_h * scaling_factor)
         new_size = (new_w, new_h)
         if isinstance(clip[0], np.ndarray):
-            return [np.array(PIL.Image.fromarray(img).resize(new_size)) for img in clip]
+            
+            return [np.array(PIL.Image.fromarray(img.astype(np.uint8)).resize(new_size)) for img in clip]
         elif isinstance(clip[0], PIL.Image.Image):
             return [img.resize(size=(new_w, new_h), resample=self._get_PIL_interp(self.interpolation)) for img in clip]
         else:

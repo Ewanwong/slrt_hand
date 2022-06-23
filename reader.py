@@ -100,8 +100,8 @@ class Reader:
         if self.mode == 'train':
             print("Apply training transform.")
             return Compose([
-                Resize(256),
-                CenterCrop(224),
+                # Resize(256),
+                # CenterCrop(224),
                 ImageAugmentation(trans=0.1, color_dev=0.1, distortion=True),
                 ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -110,8 +110,8 @@ class Reader:
         else:
             print("Apply test transform")
             return Compose([
-                Resize(256),
-                CenterCrop(224),
+                # Resize(256),
+                # CenterCrop(224),
                 ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
