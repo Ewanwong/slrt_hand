@@ -98,6 +98,7 @@ def train_model(model, mode, prefix, data_path, gloss_dict, epochs, batch, lr, a
             training_data = Reader(prefix, data_path, mode, gloss_dict, batch)
         model.train()
         videos, valid_len, outputs, valid_output_len = next(training_data.iterate())
+
         videos, valid_len, outputs, valid_output_len = videos.to(device), valid_len.to(device), outputs.to(device), valid_output_len.to(device)
         alignments, valid_len = model(videos, valid_len, 'train')
         loss = get_ctc_loss(alignments, valid_len, outputs, valid_output_len)
