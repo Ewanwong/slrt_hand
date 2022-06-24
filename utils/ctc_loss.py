@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-def get_ctc_loss(alignments, valid_len, outputs, valid_output_len, blank_id=1295):
+def get_ctc_loss(alignments, valid_len, outputs, valid_output_len, blank_id=0):
     # alignments: batch, max_len, num_classes
     # outputs: batch, max_output_len, num_classes
 

@@ -85,7 +85,7 @@ def load_model(model, path):
 
 
 def train_model(model, mode, prefix, data_path, gloss_dict, epochs, batch, lr, alpha, path):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
     model.train()
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)  #
