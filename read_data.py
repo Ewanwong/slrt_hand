@@ -90,7 +90,9 @@ class CSL_dataset(Dataset):
             for folder, v2 in v1.items():
                 video, label, signer = self.data[idx][folder]['features'], self.data[idx][folder]['label'], \
                                         self.data[idx][folder]['signer']
-
+                if len(video) == 0:
+                    print("skip")
+                    continue
                 self.dataset['ids'].append(id)
                 id += 1
                 self.dataset['features'].append(video)

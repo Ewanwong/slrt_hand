@@ -132,8 +132,8 @@ a = data['train']
 
 for i in a.keys():
 
-    if i == 2390:
-        print(a[i]['paths'])
+    print(i)
+    print(a[i]['paths'][0])
 
 
 
