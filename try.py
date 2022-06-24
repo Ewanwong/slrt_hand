@@ -66,10 +66,10 @@ print(dd['train'][1]['paths'])
 
 
 
-# import pickle
-# with open('gloss_dict.pkl', 'rb') as f:
-#     gloss_dict = pickle.load(f)
-# print(gloss_dict['<BLANK>'])
+import pickle
+with open('gloss_dict.pkl', 'rb') as f:
+    gloss_dict = pickle.load(f)
+print(gloss_dict['<BLANK>'])
 #
 #
 # a = torch.rand((3, 6))
@@ -125,8 +125,15 @@ print(torch.max(a, dim=1))
 
 
 
+import pickle
+with open('../data.pkl', 'rb') as f:
+    data = pickle.load(f)
+a = data['train']
 
+for i in a.keys():
 
+    if i == 2390:
+        print(a[i]['paths'])
 
 
 

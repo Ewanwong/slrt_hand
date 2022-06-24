@@ -70,7 +70,8 @@ class CSL_dataset(Dataset):
         for idx_path in idx_paths:
 
             idx, folder, video = self._get_video(idx_path)
-            self.data[idx][folder]['features'] = video
+            if len(video) > 0:
+                self.data[idx][folder]['features'] = video
 
     def _get_video(self, video_path):
         path = os.path.join(video_path, '*')

@@ -16,7 +16,7 @@ for i in sel:
         gloss_list += glosses.split(' ')
 
 gloss_list = [gloss for gloss in set(gloss_list) if len(gloss) > 0]
-gloss_list.append('<BLANK>')
+gloss_list.insert(0, '<BLANK>')
 
 dict = defaultdict(int)
 for idx, gloss in enumerate(gloss_list):
