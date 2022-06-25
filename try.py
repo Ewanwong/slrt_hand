@@ -136,5 +136,7 @@ for i in a.keys():
     print(a[i]['paths'][0])
 
 
-
+from reader import *
+a = Reader('train', '../phoenix2014_data/features/fullFrame-224x224px', '../data.pkl', 'gloss_dict.pkl')
+print(a.get_num_instances())
 

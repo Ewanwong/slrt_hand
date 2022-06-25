@@ -29,7 +29,7 @@ class CSLR(nn.Module):
         self.conv2d_fc = nn.Linear(1000, spatio_dim)
         self.conv1d = TemporalFusion(5, 2)
         self.conv1d_fc = nn.Linear(spatio_dim, num_classes)
-        self.lstm = nn.LSTM(input_size=num_classes, hidden_size=hidden_dim, num_layers=2, batch_first=True,
+        self.lstm = nn.LSTM(input_size=spatio_dim, hidden_size=hidden_dim, num_layers=2, batch_first=True,
                             bidirectional=True)
         self.fc = nn.Linear(2 * hidden_dim, num_classes)
         self.decoder = decoder
@@ -48,7 +48,8 @@ class CSLR(nn.Module):
         framewise_features = framewise_features.permute(0, 2, 1)
         spatio_temporal = self.conv1d(framewise_features)
         spatio_temporal = spatio_temporal.permute(0, 2, 1)
-        spatio_temporal = self.conv1d_fc(spatio_temporal)
+
+        spatio_temporal_pred = self.conv1d_fc(spatio_temporal)
         # batch, len, dim
 
         # TODO:计算有效长度
@@ -68,7 +69,7 @@ class CSLR(nn.Module):
             return outputs  # list of tensors
 
         if phase == "train":
-            return alignments, valid_len
+            return alignments, spatio_temporal_pred, valid_len
 
         # TODO: ctc loss, alignment proposal
         if phase == "get_feature":
@@ -100,9 +101,10 @@ def train_model(model, mode, prefix, data_path, gloss_dict, epochs, batch, lr, a
         videos, valid_len, outputs, valid_output_len = next(training_data.iterate())
 
         videos, valid_len, outputs, valid_output_len = videos.to(device), valid_len.to(device), outputs.to(device), valid_output_len.to(device)
-        alignments, valid_len = model(videos, valid_len, 'train')
-        loss = get_ctc_loss(alignments, valid_len, outputs, valid_output_len)
-        loss = loss.mean()
+        alignments, spatio_temporal_pred, valid_len = model(videos, valid_len, 'train')
+        loss1 = get_ctc_loss(alignments, valid_len, outputs, valid_output_len)
+        loss2 = get_ctc_loss(spatio_temporal_pred, valid_len, outputs, valid_output_len)
+        loss = (loss1+loss2).mean()
         # zero grad, backwards, step
         optimizer.zero_grad()
         loss.backward()
