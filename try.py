@@ -111,8 +111,8 @@ print(gloss_dict['<BLANK>'])
 # print(diction.keys())
 # print(diction['features'][0])
 
-a = torch.Tensor([[1.2, 2.4, 3], [-1.2, 2.1, 0.1]])
-print(torch.max(a, dim=1))
+# a = torch.Tensor([[1.2, 2.4, 3], [-1.2, 2.1, 0.1]])
+# print(torch.max(a, dim=1))
 
 
 
@@ -125,18 +125,29 @@ print(torch.max(a, dim=1))
 
 
 
-import pickle
-with open('../data.pkl', 'rb') as f:
-    data = pickle.load(f)
-a = data['train']
+# import pickle
+# with open('../data.pkl', 'rb') as f:
+#     data = pickle.load(f)
+# a = data['train']
+#
+# for i in a.keys():
+#
+#     print(i)
+#     print(a[i]['paths'][0])
+#
+#
+# from reader import *
+# a = Reader('train', '../phoenix2014_data/features/fullFrame-224x224px', '../data.pkl', 'gloss_dict.pkl')
+# print(a.get_num_instances())
 
-for i in a.keys():
+a = torch.nn.LSTM(input_size=3, hidden_size=8, batch_first=True)
+b = torch.zeros((2, 15, 3))
+valid = torch.Tensor([2, 15])
 
-    print(i)
-    print(a[i]['paths'][0])
+packed_emb = torch.nn.utils.rnn.pack_padded_sequence(b, valid, batch_first=True,
+                                                       enforce_sorted=False)
+alignments, _ = a(packed_emb)
 
+alignments, _ = torch.nn.utils.rnn.pad_packed_sequence(alignments, batch_first=True)
 
-from reader import *
-a = Reader('train', '../phoenix2014_data/features/fullFrame-224x224px', '../data.pkl', 'gloss_dict.pkl')
-print(a.get_num_instances())
-
+print(alignments.shape)

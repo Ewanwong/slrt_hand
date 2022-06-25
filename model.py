@@ -54,7 +54,7 @@ class CSLR(nn.Module):
 
         # TODO:计算有效长度
         def v_len(l_in):
-            return int((l_in + 2 * 1 - 2 - 2) / 2 + 1)
+            return int((l_in + 2 * 1 - 2) / 2 + 1)
         valid_len = torch.Tensor([v_len(v_len(vlg)) for vlg in valid_lengths]).type(torch.int32)
 
         # lstm处mask
@@ -88,7 +88,7 @@ def load_model(model, path):
 
 
 def train_model(model, mode, prefix, data_path, gloss_dict, epochs, batch, lr, alpha, path):
-    device = torch.device('cuda:2' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:3' if torch.cuda.is_available() else 'cpu')
     model.train()
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)  #
