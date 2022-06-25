@@ -60,7 +60,7 @@ class Reader:
                 video = video2vector(video_path)
                 video, label = self.data_aug(video, label, self.num_classes)
 
-                video = video.float() / 127.5 - 1
+                # video = video.float() / 127.5 - 1
 
                 videos.append(video)
                 outputs.append(label)

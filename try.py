@@ -140,14 +140,14 @@ print(gloss_dict['<BLANK>'])
 # a = Reader('train', '../phoenix2014_data/features/fullFrame-224x224px', '../data.pkl', 'gloss_dict.pkl')
 # print(a.get_num_instances())
 
-a = torch.nn.LSTM(input_size=3, hidden_size=8, batch_first=True)
-b = torch.zeros((2, 15, 3))
-valid = torch.Tensor([2, 15])
-
-packed_emb = torch.nn.utils.rnn.pack_padded_sequence(b, valid, batch_first=True,
-                                                       enforce_sorted=False)
-alignments, _ = a(packed_emb)
-
-alignments, _ = torch.nn.utils.rnn.pad_packed_sequence(alignments, batch_first=True)
-
-print(alignments.shape)
+# a = torch.nn.LSTM(input_size=3, hidden_size=8, batch_first=True)
+# b = torch.zeros((2, 15, 3))
+# valid = torch.Tensor([2, 15])
+#
+# packed_emb = torch.nn.utils.rnn.pack_padded_sequence(b, valid, batch_first=True,
+#                                                        enforce_sorted=False)
+# alignments, _ = a(packed_emb)
+#
+# alignments, _ = torch.nn.utils.rnn.pad_packed_sequence(alignments, batch_first=True)
+#
+# print(alignments.shape)

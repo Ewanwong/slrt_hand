@@ -48,7 +48,7 @@ class CSLR(nn.Module):
         framewise_features = framewise_features.permute(0, 2, 1)
         spatio_temporal = self.conv1d(framewise_features)
         spatio_temporal = spatio_temporal.permute(0, 2, 1)
-        print(spatio_temporal.shape)
+
         spatio_temporal_pred = self.conv1d_fc(spatio_temporal)
         # batch, len, dim
 
@@ -62,7 +62,7 @@ class CSLR(nn.Module):
                                                        enforce_sorted=False)
         alignments, _ = self.lstm(packed_emb)
         alignments, _ = nn.utils.rnn.pad_packed_sequence(alignments, batch_first=True)
-        print(alignments.shape)
+
         alignments = self.fc(alignments)  # 有mask
         # batch, len , num_classes
 
