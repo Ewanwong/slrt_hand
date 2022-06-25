@@ -48,19 +48,21 @@ class CSLR(nn.Module):
         framewise_features = framewise_features.permute(0, 2, 1)
         spatio_temporal = self.conv1d(framewise_features)
         spatio_temporal = spatio_temporal.permute(0, 2, 1)
-
+        print(spatio_temporal.shape)
         spatio_temporal_pred = self.conv1d_fc(spatio_temporal)
         # batch, len, dim
 
         # TODO:计算有效长度
-        valid_len = torch.Tensor([vlg / 4 for vlg in valid_lengths]).type(torch.int32)
+        def v_len(l_in):
+            return int((l_in + 2 * 1 - 2 - 2) / 2 + 1)
+        valid_len = torch.Tensor([v_len(v_len(vlg)) for vlg in valid_lengths]).type(torch.int32)
 
         # lstm处mask
         packed_emb = nn.utils.rnn.pack_padded_sequence(spatio_temporal, valid_len, batch_first=True,
                                                        enforce_sorted=False)
         alignments, _ = self.lstm(packed_emb)
         alignments, _ = nn.utils.rnn.pad_packed_sequence(alignments, batch_first=True)
-
+        print(alignments.shape)
         alignments = self.fc(alignments)  # 有mask
         # batch, len , num_classes
 
