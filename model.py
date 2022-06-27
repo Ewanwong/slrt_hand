@@ -68,6 +68,7 @@ class CSLR(nn.Module):
 
         if phase == "predict":
             outputs = self.decoder.max_decode(alignments, valid_len)
+
             return outputs  # list of tensors
 
         if phase == "train":
@@ -101,7 +102,7 @@ def train_model(model, mode, prefix, data_path, gloss_dict, epochs, batch, lr, a
             training_data = Reader(prefix, data_path, mode, gloss_dict, batch)
         model.train()
         videos, valid_len, outputs, valid_output_len = next(training_data.iterate())
-
+        print(torch.max(outputs, dim=2)[1])
         videos, valid_len, outputs, valid_output_len = videos.to(device), valid_len.to(device), outputs.to(device), valid_output_len.to(device)
         alignments, spatio_temporal_pred, valid_len = model(videos, valid_len, 'train')
         loss1 = get_ctc_loss(alignments, valid_len, outputs, valid_output_len)
@@ -128,10 +129,11 @@ def evaluate(model, mode, prefix, data_path, gloss_dict, batch):
         videos, valid_len, labels, valid_output_len = next(test_data.iterate())
         videos, valid_len, labels, valid_output_len = videos.to(device), valid_len.to(device), labels.to(
             device), valid_output_len.to(device)
+
         outputs = model(videos, valid_len, 'predict')
         wer, distance, length = batch_evaluation(outputs, labels, valid_output_len)
         total_length += length
         total_distance += distance
-        print(total_distance/total_length)
+        print((total_distance/total_length).cpu().item())
 
 
